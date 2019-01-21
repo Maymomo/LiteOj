@@ -16,8 +16,10 @@ class RegisterForm extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
-        axios.post("/authorize/register",
+        console.log('Received values of form: ', {headers: {
+            'Access-Control-Allow-Origin': '*',
+          }}, values);
+        axios.post("http://127.0.0.1:8082/authorize/register",
           values
           ).then(response =>  {
           console.log(response)
