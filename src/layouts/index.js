@@ -5,7 +5,6 @@ import {Link} from 'umi'
 import UserManger from "./components/UserManager";
 import {connect} from "dva";
 import withRouter from 'umi/withRouter';
-
 const {
   Header, Content, Footer
 } = Layout;

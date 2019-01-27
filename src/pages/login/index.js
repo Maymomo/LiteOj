@@ -4,11 +4,10 @@ import router from "umi/router";
 import axios from "axios";
 import {Button, Col, Form, Icon, Input, Modal, Row} from "antd";
 import {LOGIN_URL} from "@/api/api";
+import Checkbox from 'antd/es/checkbox';
 
 
 const {TextArea} = Input;
-
-
 class LoginForm extends Component {
 
   state = {visible: false, login_message: ""};
@@ -67,6 +66,13 @@ class LoginForm extends Component {
             )}
           </Form.Item>
           <Form.Item>
+            {getFieldDecorator('remember',{
+              valuePropName:'checked',
+              initialValue:true,
+            })(
+              <Checkbox>Remember me</Checkbox>
+            )}
+            <a  style={{float:"right"}} className="login-form-forget" href="/forget">Forget password</a>
             <Button type="primary" htmlType="submit" className="login-form-button" block={true}>
               Login
             </Button>
@@ -92,9 +98,10 @@ function Login(state) {
           marginTop: "50%",
           backgroundColor: "white",
           borderRadius: "5%",
-          padding: "5%",
+          padding: "10%",
+          width:"300px",
           zIndex: "1px",
-          boxShadow: "-2px 2px 15px 3px rgba(0,0,0,0.42)"
+          boxShadow: "-2px 2px 15px 3px rgba(0,0,0,0.42)",
         }}>
           <WrapperForm/>
         </div>

@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Button, Modal} from "antd";
+import {Button, Modal ,Form } from "antd";
 import router from 'umi/router';
-
 
 class UserManger extends Component {
 
