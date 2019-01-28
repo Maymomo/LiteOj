@@ -145,7 +145,7 @@ class RegisterForm extends Component {
             <Select showSearch optionFilterProp="short" defaultValue="No school" onChange={this.handleSelected}>
               {
                 this.state.schools.map(function (data) {
-                  return (<Option key={data.sid + ""} value={data.sid} short={data.ShortName}>{data.Name}> </Option>);
+                  return (<Option key={data.sid} value={data.sid} short={data.ShortName}>{data.Name} </Option>);
                 })
               }
             </Select>
