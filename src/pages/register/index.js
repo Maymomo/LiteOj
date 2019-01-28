@@ -9,12 +9,32 @@ import {
 const {TextArea} = Input;
 const Option = Select.Option;
 class RegisterForm extends Component {
-  state = {
-    register_info:
-      {message: "", submit: false, success: false},
-    check_password: {status: "success"},
-    schools:[],
-  };
+  constructor() {
+    super();
+    this.state = {
+      register_info:
+        { message: "", submit: false, success: false },
+      check_password: { status: "success" },
+      schools: [],
+    };
+    axios.get(SCHOOLLIST_URL).then(response=>{
+        let data=response.data;
+        if (data.hasOwnProperty("errCode") && data.errCode === 0) {
+          console.log("here");
+          let msg=window.atob(data.message);
+          console.log(msg);
+          let state = this.state;
+          state.schools=JSON.parse(msg);
+          this.setState(state);
+        } else {
+          console.log("err not catch");
+        }
+      }
+    ).catch(()=> {
+        console.log("err not catch2");
+      }
+    );
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -68,23 +88,6 @@ class RegisterForm extends Component {
     router.push("/register");
   };
   render() {
-    axios.get(SCHOOLLIST_URL).then(response=>{
-        let data=response.data;
-        if (data.hasOwnProperty("errCode") && data.errCode === 0) {
-          console.log("here");
-          let msg=window.atob(data.message);
-          console.log(msg);
-          let state = this.state;
-          state.schools=JSON.parse(msg);
-          this.setState(state);
-      } else {
-          console.log("err not catch");
-        }
-      }
-    ).catch(()=> {
-        console.log("err not catch2");
-      }
-    );
     let scs=this.state.schools;
     const {getFieldDecorator} = this.props.form;
     return (
