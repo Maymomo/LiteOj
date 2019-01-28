@@ -2,39 +2,39 @@ import React, {Component} from 'react';
 import router from 'umi/router';
 import {connect} from 'dva';
 import axios from 'axios';
-import {REGISTER_URL,SCHOOLLIST_URL} from "@/api/api";
+import {REGISTER_URL, SCHOOLLIST_URL} from "@/api/api";
 import {
-  Form, Icon, Input, Button, Row, Col, Modal,Select,
+  Form, Icon, Input, Button, Row, Col, Modal, Select,
 } from 'antd';
+
 const {TextArea} = Input;
 const Option = Select.Option;
+
 class RegisterForm extends Component {
   constructor() {
     super();
     this.state = {
       register_info:
-        { message: "", submit: false, success: false },
-      check_password: { status: "success" },
+        {message: "", submit: false, success: false},
+      check_password: {status: "success"},
       schools: [],
     };
-    axios.get(SCHOOLLIST_URL).then(response=>{
-        let data=response.data;
+    axios.get(SCHOOLLIST_URL).then(response => {
+        let data = response.data;
         if (data.hasOwnProperty("errCode") && data.errCode === 0) {
-          console.log("here");
-          let msg=window.atob(data.message);
-          console.log(msg);
-          let state = this.state;
-          state.schools=JSON.parse(msg);
-          this.setState(state);
+          let msg = window.atob(data.message);
+          let schools = JSON.parse(msg);
+          this.setState({schools: schools});
         } else {
           console.log("err not catch");
         }
       }
-    ).catch(()=> {
+    ).catch(() => {
         console.log("err not catch2");
       }
     );
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -60,9 +60,11 @@ class RegisterForm extends Component {
       }
     });
   };
+
   handleSelected(value) {
     console.log(`selected ${value}`);
   }
+
   checkPassword = (rule, value, callback) => {
     if (this.props.form.getFieldsValue(["password"]).hasOwnProperty("password")) {
       if (!(this.props.form.getFieldsValue(["password"]).password === value)) {
@@ -87,8 +89,8 @@ class RegisterForm extends Component {
   handleModalCancel = e => {
     router.push("/register");
   };
+
   render() {
-    let scs=this.state.schools;
     const {getFieldDecorator} = this.props.form;
     return (
       <div>
@@ -142,9 +144,8 @@ class RegisterForm extends Component {
           <Form.Item>
             <Select showSearch optionFilterProp="short" defaultValue="No school" onChange={this.handleSelected}>
               {
-                scs.map(function(data) {
-                  console.log(data);
-                  return (<Option value={data.sid} short={data.ShortName}>{data.Name}</Option>);
+                this.state.schools.map(function (data) {
+                  return (<Option key={data.sid + ""} value={data.sid} short={data.ShortName}>{data.Name}> </Option>);
                 })
               }
             </Select>
@@ -186,7 +187,7 @@ function Register(state) {
           borderRadius: "5%",
           padding: "10%",
           zIndex: "1px",
-          width:"350px",
+          width: "350px",
           boxShadow: "0px 0px 12px 2px rgba(0,0,0,0.42)"
         }}>
           <WrapperForm/>

@@ -5,6 +5,7 @@ import {Link} from 'umi'
 import UserManger from "./components/UserManager";
 import {connect} from "dva";
 import withRouter from 'umi/withRouter';
+
 const {
   Header, Content, Footer
 } = Layout;
@@ -62,11 +63,12 @@ function BasicLayout(props) {
       <Content className={styles.content}>
         {props.children}
       </Content>
-      <Footer style={{ position: "sticky", bottom: "0" , textAlign: "center"}}>
+      <Footer style={{textAlign: "center"}}>
         京ICP备15062075号-x
         Powered by OnlineJudge Version: 20181215-9a50c
       </Footer>
     </Layout>
+
   );
 }
 
