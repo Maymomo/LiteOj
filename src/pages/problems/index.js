@@ -47,7 +47,6 @@ class ProblemsTable extends Component {
           }
           msg.data[i].rate = rate;
         }
-
         this.setState({data: msg.data, loading: false, pagination: {total: msg.max_pages + 1}});
       } else {
         let msg = window.atob(response.data.message);
