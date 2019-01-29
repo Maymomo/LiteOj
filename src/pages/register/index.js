@@ -45,6 +45,7 @@ class RegisterForm extends Component {
             username: values.username,
             password: values.password,
             nickname: values.nickname,
+            email   : values.email,
             description: values.description,
           }
         ).then(response => {
@@ -128,6 +129,16 @@ class RegisterForm extends Component {
                      placeholder="Confirm Password">
               </Input>
             )}
+          </Form.Item>
+          <Form.Item>
+            {
+              getFieldDecorator('email',{
+                rules:[{required:false,message:"example@example.com"}],
+              })(
+                <Input prefix={<Icon type="edit" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                       placeholder="email"/>
+              )
+            }
           </Form.Item>
           <Form.Item>
             {
