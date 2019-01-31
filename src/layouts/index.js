@@ -49,6 +49,11 @@ function BasicLayout(props) {
                 </Link>
               </Menu.Item>
               <Menu.Item key="6">
+                <Link to="/FAQ">
+                  FAQ
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="7">
                 <Link to="/about">
                   About
                 </Link>
