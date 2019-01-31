@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Col, Row, Table, Input, Layout} from 'antd';
 import axios from 'axios';
-import {PROBLEMS_URL} from "@/api/api";
+import {PROBLEM_URL, PROBLEMS_URL} from "@/api/api";
 
 const Search = Input.Search;
 
@@ -27,12 +27,40 @@ const columns = [{
 
 class ProblemsTable extends Component {
   state = {data: [], pagination: {pageSize: 15}, loading: false};
+  onsearch = false;
 
   componentDidMount() {
-    this.fetch({page: 1});
+    this.fetchProblems({page: 1});
   }
 
-  fetch = (params = {}) => {
+  fetchProblem = (params = {}) => {
+    this.setState({loading: true});
+    axios.get(PROBLEM_URL + params.pid
+    ).then(response => {
+        if (response.data.hasOwnProperty("errCode") && response.data.errCode === 0) {
+          let msg = window.atob(response.data.message);
+          msg = JSON.parse(msg);
+          let rate = 'N/A';
+          if (msg.submit > 0) {
+            rate = (100.0 * msg.solved / msg.data.submit).toFixed(2);
+            rate = rate + "%";
+          }
+          msg.rate = rate;
+          let data = [msg];
+          this.setState({data: data, loading: false, pagination: {total: msg.max_pages + 1}});
+        } else {
+          let msg = response.data.message;
+          alert(msg);
+          this.setState({loading: false});
+        }
+      }
+    ).catch((e) => {
+        console.log(e);
+      }
+    )
+  };
+
+  fetchProblems = (params = {}) => {
     this.setState({loading: true});
     axios.get(PROBLEMS_URL, {params: {page: params.page, capacity: 15}}
     ).then(response => {
@@ -50,17 +78,35 @@ class ProblemsTable extends Component {
         this.setState({data: msg.data, loading: false, pagination: {total: msg.max_pages + 1}});
       } else {
         let msg = window.atob(response.data.message);
-        msg = JSON.parse(msg);
+        this.setState({loading: false});
         alert(msg);
       }
     }).catch((e) => {
         console.log(e);
+        this.setState({loading: false});
       }
     )
   };
+
+  handleSearch = value => {
+    let pid = parseInt(value);
+    if (isNaN(pid)) {
+      console.log(("Nan"));
+    } else {
+      this.onsearch = true;
+      this.fetchProblem({pid: pid, page: 1});
+    }
+  };
+
+  handleSearchChange = value => {
+    if (this.onsearch === true && (value.length === 0  || isNaN(parseInt(value)))) {
+      this.onsearch = false;
+      this.fetchProblems({page: 1});
+    }
+  };
   handleTableChange = (pagination, filters, sorter) => {
     console.log(pagination, filters, sorter);
-    this.fetch({page: pagination.current});
+    this.fetchProblems({page: pagination.current});
   };
 
   render() {
@@ -71,8 +117,9 @@ class ProblemsTable extends Component {
           <Col style={{float: "right", marginRight: "20px"}}>
             <Search
               placeholder="Search Problem"
-              onSearch={value => console.log(value)}
+              onSearch={this.handleSearch}
               enterButton
+              onChange={this.handleSearchChange}
             />
           </Col>
         </Row>

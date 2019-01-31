@@ -98,7 +98,7 @@ class StatusTable extends Component{
   };
   render() {
     return (
-          <Table
+          <Table style={{background: "white"}}
             bordered={true}
             columns={columns}
             dataSource={this.state.data}

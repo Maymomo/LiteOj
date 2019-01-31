@@ -196,8 +196,8 @@ function Register(state) {
       <Col md={4}>
         <div style={{
           marginTop: "20%",
-          backgroundColor: "white",
           borderRadius: "5%",
+          background: "white",
           padding: "10%",
           zIndex: "1px",
           width: "350px",

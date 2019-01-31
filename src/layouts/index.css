@@ -7,6 +7,7 @@ body {
   width: 100%;
   height: 100%;
   background-color: #eeeeee;
+  overflow: auto;
 }
 
 * {
@@ -16,7 +17,6 @@ body {
 
 .content {
   padding-top: 95px;
-  overflow:scroll;
 }
 
 .header {
