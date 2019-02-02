@@ -50,28 +50,58 @@ class ProblemInfo extends Component {
       }else {
         alert("Error");
       }
-    }).catch(alert("No Info"));
+    }).catch((e)=> {
+      console.log(e);
+      alert("No Info")
+    });
   };
   render() {
     return (
-      <ReactMarkdown source={this.state.description}/>
+      <layout>
+        <row>
+          <div style={{text_align:"center;"}}>
+          <a>{this.state.name}</a>
+          </div>
+        </row>
+        <row>
+          <ReactMarkdown source={"# Description"}/>
+          <ReactMarkdown source={this.state.description}/>
+        </row>
+        <row>
+          <ReactMarkdown source={"# Input"}/>
+          <ReactMarkdown source={this.state.input}/>
+        </row>
+        <row>
+          <ReactMarkdown source={"# Output"}/>
+          <ReactMarkdown source={this.state.output}/>
+        </row>
+        <row>
+          <ReactMarkdown source={"# Example Input"}/>
+          <ReactMarkdown source={this.state.simple_input}/>
+        </row>
+        <row>
+          <ReactMarkdown source={"# Example Output"}/>
+          <ReactMarkdown source={this.state.simple_output}/>
+        </row>
+      </layout>
     );
   }
 }
 
 
-function ProblemInfo(state) {
+function ProblemInfos(state) {
   return (
     <Row>
-      <Col md={3}/>
-      <Col md={18}>
+      <Col md={12}>
         <ProblemInfo/>
       </Col>
-      <Col md={3}/>
+      <Col md={12}>
+
+      </Col>
     </Row>
   );
 }
 
 export default connect(states => {
   return {...states};
-})(ProblemInfo);
+})(ProblemInfos);
