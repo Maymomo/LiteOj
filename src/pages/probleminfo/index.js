@@ -5,7 +5,7 @@ import axios from 'axios';
 import { PROBLEMINFO_URL } from '@/api/api';
 import ReactMarkdown from 'react-markdown';
 
-class ProblemInfo extends Component {
+class ProblemInfoE extends Component {
   constructor(){
     super();
     this.state={
@@ -65,7 +65,7 @@ function ProblemInfo(state) {
     <Row>
       <Col md={3}/>
       <Col md={18}>
-        <ProblemInfo/>
+        <ProblemInfoE/>
       </Col>
       <Col md={3}/>
     </Row>
