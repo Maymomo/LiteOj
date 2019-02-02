@@ -6,110 +6,116 @@ import Table from 'antd/es/table';
 import { connect } from 'dva';
 import Row from 'antd/es/grid/row';
 import Col from 'antd/es/grid/col';
-import { applyForEach } from 'umi/lib/runtimePlugin';
+
 let languageEnum = new Map();
-languageEnum.set(1,"C");
+languageEnum.set(1, 'C');
 
 
+function toDateTime(secs) {
+  let t = new Date(1970, 0, 1); // Epoch
+  t.setSeconds(secs * 1000);
+  return t;
+}
 
 const columns = [{
   title: 'SubmitID',
   dataIndex: 'id',
-  defaultSortOrder:'descend',
-  sorter:(a,b)=>a.id-b.id,
-  sortDirections: ['ascend','descend'],
+  defaultSortOrder: 'descend',
+  sorter: (a, b) => a.id - b.id,
+  sortDirections: ['ascend', 'descend'],
 }, {
   title: 'UserName',
   dataIndex: 'username',
-  render:(text,record)=>(
+  render: (text, record) => (
     <span>
       <a href={record.uid}>{text}</a>
     </span>
-  )
+  ),
 }, {
   title: 'SubmitTime',
   dataIndex: 'time',
-  render:text=>(
+  render: text => (
     <span>
-      <a>{Date(text*1000)}</a>
+      <a href="/">{toDateTime(text).toDateString()}</a>
     </span>
   ),
 }, {
   title: 'language',
   dataIndex: 'language',
-  render:text=>(
+  render: text => (
     <span>
-      <a>{languageEnum.get(text)}</a>
+      <a href="/">{languageEnum.get(text)}</a>
     </span>
-  )
-},{
-  title:'ProlemName',
-  dataIndex:"problemname",
-  render:(text,record)=>(
+  ),
+}, {
+  title: 'ProlemName',
+  dataIndex: 'problemname',
+  render: (text, record) => (
     <span>
       <a href={record.pid}>{text}</a>
     </span>
-  )
-},{
-  title:'TimeCost',
-  dataIndex:"timecost",
-},{
-  title:"status",
-  dataIndex:"status",
+  ),
+}, {
+  title: 'TimeCost',
+  dataIndex: 'timecost',
+}, {
+  title: 'status',
+  dataIndex: 'status',
 },
 ];
 
-class StatusTable extends Component{
-  constructor(){
+class StatusTable extends Component {
+  constructor() {
     super();
-    this.state={
-      data:[],
-      pagination:15,
-      loading:false,
+    this.state = {
+      data: [],
+      pagination: 15,
+      loading: false,
     };
   }
-  componentDidMount(){
-    this.fetch({page: 1});
+
+  componentDidMount() {
+    this.fetch({ page: 1 });
   }
-  fetch=(params={})=>{
-    let state=this.state;
-    state.loading=true;
+
+  fetch = (params = {}) => {
+    let state = this.state;
+    state.loading = true;
     this.setState(state);
-    axios.get(STATUS_URL,{params: {page: params.page, capacity: 15}}).then(
-      response=>{
-        if (response.data.hasOwnProperty("errCode")&&response.data.errCode===0)
-        {
+    axios.get(STATUS_URL, { params: { page: params.page, capacity: 15 } }).then(
+      response => {
+        if (response.data.hasOwnProperty('errCode') && response.data.errCode === 0) {
           let msg = JSON.parse(window.atob(response.data.message));
-          this.setState({data: msg.data, loading: false, pagination: {total: msg.max_pages + 1}});
-        }else{
+          this.setState({ data: msg.data, loading: false, pagination: { total: msg.max_pages + 1 } });
+        } else {
           let msg = window.atob(response.data.message);
           msg = JSON.parse(msg);
-          console.log(msg);
           alert(msg);
         }
-      }
-    ).catch((e)=>{
-      console.log(e)
-    })
+      },
+    ).catch((e) => {
+      alert(e);
+    });
   };
-  handleTableChange = (pagination, filters, sorter) => {
-    console.log(pagination, filters, sorter);
-    this.fetch({page: pagination.current});
+  handleTableChange = ({ pagination }) => {
+    this.fetch({ page: pagination.current });
   };
+
   render() {
     return (
-          <Table style={{background: "white"}}
-            bordered={true}
-            columns={columns}
-            dataSource={this.state.data}
-            pagination={this.state.pagination}
-            loading={this.state.loading}
-            onChange={this.handleTableChange}>
-          </Table>
+      <Table style={{ background: 'white' }}
+             bordered={true}
+             columns={columns}
+             dataSource={this.state.data}
+             pagination={this.state.pagination}
+             loading={this.state.loading}
+             onChange={this.handleTableChange}>
+      </Table>
     );
   }
 }
-function Status(state) {
+
+function Status() {
   return (
     <Row>
       <Col md={3}/>
@@ -122,5 +128,5 @@ function Status(state) {
 }
 
 export default connect(states => {
-  return {...states};
+  return { ...states };
 })(Status);

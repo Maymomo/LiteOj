@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import router from 'umi/router';
-import {connect} from 'dva';
+import { connect } from 'dva';
 import axios from 'axios';
-import {REGISTER_URL, SCHOOLLIST_URL} from "@/api/api";
+import { REGISTER_URL, SCHOOLLIST_URL } from '@/api/api';
 import {
   Form, Icon, Input, Button, Row, Col, Modal, Select,
 } from 'antd';
 
-const {TextArea} = Input;
+const { TextArea } = Input;
 const Option = Select.Option;
 
 class RegisterForm extends Component {
@@ -15,30 +15,29 @@ class RegisterForm extends Component {
     super();
     this.state = {
       register_info:
-        {message: "", submit: false, success: false},
-      check_password: {status: "success"},
+        { message: '', submit: false, success: false },
+      check_password: { status: 'success' },
       schools: [],
     };
     axios.get(SCHOOLLIST_URL).then(response => {
         let data = response.data;
-        if (data.hasOwnProperty("errCode") && data.errCode === 0) {
+        if (data.hasOwnProperty('errCode') && data.errCode === 0) {
           let msg = window.atob(data.message);
           let schools = JSON.parse(msg);
-          this.setState({schools: schools});
+          this.setState({ schools: schools });
         } else {
-          console.log("err not catch");
+          console.log('err not catch');
         }
-      }
+      },
     ).catch(() => {
-        console.log("err not catch2");
-      }
+        console.log('err not catch2');
+      },
     );
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(err);
       if (!err) {
         axios.post(REGISTER_URL,
           {
@@ -47,74 +46,76 @@ class RegisterForm extends Component {
             nickname: values.nickname,
             email: values.email,
             description: values.description,
-          }
+          },
         ).then(response => {
           let message = response.data;
-          if (message.hasOwnProperty("errCode") && message.errCode !== 0) {
-            this.setState({register_info: {success: false, submit: true, message: "Register Success"}});
+          if (message.hasOwnProperty('errCode') && message.errCode !== 0) {
+            this.setState({ register_info: { success: false, submit: true, message: 'Register Success' } });
           } else {
-            this.setState({register_info: {success: true, submit: true, message: message.message}});
+            this.setState({ register_info: { success: true, submit: true, message: message.message } });
           }
         }).catch(error => {
-          this.setState({register_info: {success: false, submit: true, message: error.toLocaleString()}});
+          this.setState({ register_info: { success: false, submit: true, message: error.toLocaleString() } });
         });
+      } else {
+        alert(err);
+        router.push('/register');
       }
     });
   };
 
-  handleSelected(value) {
-    console.log(`selected ${value}`);
-  }
 
   checkPassword = (rule, value, callback) => {
-    if (this.props.form.getFieldsValue(["password"]).hasOwnProperty("password")) {
-      if (!(this.props.form.getFieldsValue(["password"]).password === value)) {
-        this.setState({check_password: {status: "error"}});
+    if (this.props.form.getFieldsValue(['password']).hasOwnProperty('password')) {
+      if (!(this.props.form.getFieldsValue(['password']).password === value)) {
+        this.setState({ check_password: { status: 'error' } });
         callback(rule);
       } else {
-        this.setState({check_password: {status: "success"}});
+        this.setState({ check_password: { status: 'success' } });
         callback();
       }
     } else {
-      this.setState({check_password: {status: "error"}});
+      this.setState({ check_password: { status: 'error' } });
       callback(rule);
     }
   };
-  handleModalOk = e => {
+
+  handleModalOk = () => {
     if (this.state.register_info.success) {
-      router.push("/login");
+      router.push('/login');
     } else {
-      router.push("/register");
+      router.push('/register');
     }
   };
-  handleModalCancel = e => {
-    router.push("/register");
+
+  handleModalCancel = () => {
+    router.push('/register');
   };
 
   render() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
               rules: [{
-                required: true, message: 'Username length is at least 6', min: 6
+                required: true, message: 'Username length is at least 6', min: 6,
               }],
             })(
-              <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="Username"/>
+              <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>} placeholder="Username"/>,
             )}
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
               rules: [{
                 required: true, message:
-                  'Password length is at least 10', min: 10
+                  'Password length is at least 10', min: 10,
               }],
             })(
-              <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
+              <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }}/>} type="password"
                      placeholder="Password">
-              </Input>
+              </Input>,
             )}
           </Form.Item>
           <Form.Item validateStatus={this.state.check_password.status}>
@@ -125,20 +126,20 @@ class RegisterForm extends Component {
                 validator: this.checkPassword,
               }],
             })(
-              <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
+              <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }}/>} type="password"
                      placeholder="Confirm Password">
-              </Input>
+              </Input>,
             )}
           </Form.Item>
           <Form.Item>
             {
               getFieldDecorator('email', {
-                rules: [{required: true, message: "example@example.com", type: "email"}],
+                rules: [{ required: true, message: 'example@example.com', type: 'email' }],
               })(
-                <Input prefix={<Icon type="edit" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                       type = "email"
+                <Input prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+                       type="email"
                        placeholder="email">
-                </Input>
+                </Input>,
               )
             }
           </Form.Item>
@@ -147,17 +148,17 @@ class RegisterForm extends Component {
               getFieldDecorator('nickname', {
                 rules: [{
                   required: true, message:
-                    "Nickname length is at least 10", min: 6
+                    'Nickname length is at least 10', min: 6,
                 }],
               })(
-                <Input prefix={<Icon type="edit" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                       placeholder="Nickname"/>
+                <Input prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+                       placeholder="Nickname"/>,
               )}
           </Form.Item>
           <Form.Item>
-            <Select showSearch optionFilterProp="short" defaultValue="No school" onChange={this.handleSelected}>
+            <Select showSearch optionFilterProp="short" defaultValue="No school">
               {
-                this.state.schools.map(function (data) {
+                this.state.schools.map(function(data) {
                   return (<Option key={data.sid} value={data.sid} short={data.ShortName}>{data.Name} </Option>);
                 })
               }
@@ -166,10 +167,10 @@ class RegisterForm extends Component {
           <Form.Item>
             {
               getFieldDecorator('description', {
-                rules: [{required: false, message: "Enter the password twice differently"}],
+                rules: [{ required: false, message: 'Enter the password twice differently' }],
               })(
-                <TextArea prefix={<Icon type="edit" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                          placeholder="Description"/>
+                <TextArea prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+                          placeholder="Description"/>,
               )}
           </Form.Item>
           <Form.Item>
@@ -189,19 +190,19 @@ class RegisterForm extends Component {
 
 const WrapperForm = Form.create()(RegisterForm);
 
-function Register(state) {
+function Register() {
   return (
-    <Row type="flex" algin="center" style={{height: "100%"}}>
+    <Row type="flex" algin="center" style={{ height: '100%' }}>
       <Col md={10}/>
       <Col md={4}>
         <div style={{
-          marginTop: "20%",
-          borderRadius: "5%",
-          background: "white",
-          padding: "10%",
-          zIndex: "1px",
-          width: "350px",
-          boxShadow: "0px 0px 12px 2px rgba(0,0,0,0.42)"
+          marginTop: '20%',
+          borderRadius: '5%',
+          background: 'white',
+          padding: '10%',
+          zIndex: '1px',
+          width: '350px',
+          boxShadow: '0px 0px 12px 2px rgba(0,0,0,0.42)',
         }}>
           <WrapperForm/>
         </div>
@@ -215,7 +216,4 @@ export default connect(state => {
   if (state.user.isLogin) {
     router.push('/');
   }
-  return {
-    ...state,
-  };
 })(Register);

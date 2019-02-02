@@ -7,7 +7,6 @@ import {LOGIN_URL} from "@/api/api";
 import Checkbox from 'antd/es/checkbox';
 
 
-const {TextArea} = Input;
 class LoginForm extends Component {
 
   state = {visible: false, login_message: ""};
@@ -38,10 +37,10 @@ class LoginForm extends Component {
       }
     });
   };
-  handleModalOk = e => {
+  handleModalOk = () => {
     this.setState({visible: false, login_message: " "});
   };
-  handleModalCancel = e => {
+  handleModalCancel = () => {
     this.setState({visible: false, login_message: " "});
   };
 
@@ -89,7 +88,7 @@ class LoginForm extends Component {
 
 const WrapperForm = Form.create()(LoginForm);
 
-function Login(state) {
+function Login() {
   return (
     <Row type="flex" algin="center">
       <Col md={10}/>
@@ -115,7 +114,4 @@ export default connect(state => {
   if (state.user.isLogin) {
     router.push('/');
   }
-  return {
-    ...state,
-  };
 })(Login);

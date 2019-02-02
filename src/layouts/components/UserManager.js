@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Button, Modal ,Form } from "antd";
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { Button } from 'antd';
 import router from 'umi/router';
 
 class UserManger extends Component {
@@ -11,22 +11,22 @@ class UserManger extends Component {
         <div>
           {this.props.username}
         </div>
-      )
+      );
     } else {
       return (
         <div>
-          <Button htmlType="button" style={{marginRight: "10px"}} onClick={() => {
-            router.push("/login");
+          <Button htmlType="button" style={{ marginRight: '10px' }} onClick={() => {
+            router.push('/login');
           }}>
             Login
           </Button>
           <Button htmlType="button" onClick={() => {
-            router.push("/register");
+            router.push('/register');
           }}>
             Register
           </Button>
         </div>
-      )
+      );
     }
   }
 }
@@ -39,12 +39,12 @@ mapStateToLoginIfo(state) {
       ...state,
       isLogin: true,
       username: state.user.username,
-    }
+    };
   } else {
     return {
       ...state,
       isLogin: false,
-    }
+    };
   }
 }
 
