@@ -14,6 +14,7 @@
     "monaco-editor-webpack-plugin": "^1.7.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-free-scrollbar": "^0.3.2",
     "react-markdown": "^4.0.6",
     "react-monaco-editor": "^0.22.0"
   },

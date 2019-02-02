@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import { Col, Row, Select } from 'antd';
+import { Col, Row, Select ,Button,Alert} from 'antd';
 import axios from 'axios';
 import { PROBLEMINFO_URL } from '@/api/api';
 import ReactMarkdown from 'react-markdown';
 import MonacoEditor from 'react-monaco-editor';
+import FreeScrollbar from 'react-free-scrollbar/src';
 const Option = Select.Option;
 // or import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 // if shipping only a subset of the features & languages is desired
@@ -28,10 +29,11 @@ class ProblemInfo extends Component {
   }
 
   componentDidMount() {
-    this.fetchProblemInfo({pid: parseInt(1)});
+    this.fetchProblemInfo({pid:parseInt(this.props.pid)});
   }
   fetchProblemInfo=(params={})=>{
     this.setState({loading:true});
+    console.log(params.pid);
     axios.get(PROBLEMINFO_URL+"/"+params.pid).then(response=>{
       if(response.data.hasOwnProperty("errCode")&&response.data.errCode===0)
       {
@@ -54,13 +56,13 @@ class ProblemInfo extends Component {
         alert("Error");
       }
     }).catch((e)=> {
-      console.log(e);
       alert("No Info")
     });
   };
   render() {
     return (
-      <layout>
+      <div style={{height:document.body.clientHeight,margin:"0 15px"}}>
+        <FreeScrollbar>
         <row>
           <div style={{textAlign:"center",fontSize:"30px"}}>
           {this.state.name}
@@ -86,7 +88,8 @@ class ProblemInfo extends Component {
           <ReactMarkdown source={"## Example Output"}/>
           <ReactMarkdown source={this.state.simple_output}/>
         </row>
-      </layout>
+        </FreeScrollbar>
+      </div>
     );
   }
 }
@@ -133,50 +136,57 @@ class SubmitForm extends React.Component{
       selectOnLineNumbers: true
     };
     return (
-      <layout>
-        <row >
+      <div style={{height:document.body.clientHeight}}>
+        <row>
+          <div style={{textAlign:"center",fontSize:"30px"}}>
+            Code
+          </div>
+        </row>
+        <div style={{height:document.body.clientHeight*0.9,margin:"0 15px"}}>
+          <FreeScrollbar>
+          <MonacoEditor
+            width="800"
+            height={document.body.clientHeight*0.9}
+            language={this.state.language}
+            theme={this.state.theme}
+            value={code}
+            options={options}
+            onChange={::this.onChange}
+            editorDidMount={::this.editorDidMount}
+          />
+          </FreeScrollbar>
           Language:
           <Select defaultValue={"1"} onChange={this.onLanguageChange.bind(this)}>
             <Option key={"1"} value={"1"}>C</Option>
             <Option key={"2"} value={"2"}>C++</Option>
           </Select>
-            Themes:
+          Themes:
           <Select defaultValue={"vs-dark"} onChange={this.onThemeChange.bind(this)}>
             <Option key={"1"} value={"vs"}>Visual Studio</Option>
             <Option key={"2"} value={"vs-dark"}>Visual Studio Dark</Option>
             <Option key={"3"} value={"hc-black"}>High Contrast Dark</Option>
           </Select>
-        </row>
-        <row>
-        <MonacoEditor
-          width="800"
-          height={document.body.clientHeight}
-          language={this.state.language}
-          theme={this.state.theme}
-          value={code}
-          options={options}
-          onChange={::this.onChange}
-          editorDidMount={::this.editorDidMount}
-        />
-        </row>
-      </layout>
+          <Button type="primary">Submit</Button>
+        </div>
+      </div>
     );
   }
 }
-
-function ProblemInfos(state) {
-  return (
-    <Row>
-      <Col md={12}>
-        <ProblemInfo/>
-      </Col>
-      <Col md={12}>
-        <SubmitForm/>
-      </Col>
-    </Row>
-  );
+class ProblemInfoWrapper extends React.Component{
+  render() {
+    console.log(this.props.match.params.pid);
+    return(
+      <div style={{height:document.body.clientHeight}}>
+        <Row>
+          <Col md={12}>
+            <ProblemInfo pid={this.props.match.params.pid}/>
+          </Col>
+          <Col md={12}>
+            <SubmitForm pid={this.props.match.params.pid}/>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
 }
-
-export default connect(states => {
-  return {...states};
-})(ProblemInfos);
+export default ProblemInfoWrapper
