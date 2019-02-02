@@ -11,6 +11,9 @@ const {
 } = Layout;
 
 function BasicLayout(props) {
+  if (props.location.pathname.toString().includes('/probleminfo',0)) {
+    return <div>{ props.children }</div>;
+  }
   return <Layout className="layout" style={{ height: "100vh" }}>
     <Header className={styles.header}>
       <Row>

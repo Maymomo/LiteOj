@@ -11,9 +11,11 @@
     "antd": "^3.12.1",
     "axios": "^0.18.0",
     "dva": "^2.5.0-beta.2",
+    "monaco-editor-webpack-plugin": "^1.7.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-markdown": "^4.0.6"
+    "react-markdown": "^4.0.6",
+    "react-monaco-editor": "^0.22.0"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
