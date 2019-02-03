@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
-import { Col, Row, Select ,Button,Alert} from 'antd';
+import { Col, Row, Select, Button, Modal,notification } from 'antd';
 import axios from 'axios';
-import { PROBLEMINFO_URL } from '@/api/api';
+import { PROBLEMINFO_URL, SUBMIT_URL } from '@/api/api';
 import ReactMarkdown from 'react-markdown';
 import MonacoEditor from 'react-monaco-editor';
 import FreeScrollbar from 'react-free-scrollbar/src';
@@ -97,10 +96,12 @@ class SubmitForm extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
+      visible:false,
       code: '// type your code...',
       language:'cpp',
       language_post:'1',
       theme:'vs-dark',
+      source:'',
     }
   }
   editorDidMount(editor, monaco) {
@@ -108,7 +109,7 @@ class SubmitForm extends React.Component{
     editor.focus();
   }
   onChange(newValue, e) {
-    console.log('onChange', newValue, e);
+    this.state.source=newValue;
   }
   getLanguage(value){
     switch (value) {
@@ -121,6 +122,39 @@ class SubmitForm extends React.Component{
 
     }
   }
+  onSubmit(){
+    let submitParams={
+      language:this.state.language_post,
+      source:window.btoa(this.state.source),
+      problemid:this.props.pid,
+    };
+    axios.post(SUBMIT_URL,submitParams).then(response=>{
+      if(response.data.hasOwnProperty("errCode"))
+      {
+        if(response.data.errCode===10300)
+        {
+            this.setState({visible:true});
+        }else if(response.data.errCode===0){
+            window.location.href="http://localhost:8081/status";
+        }else{
+          notification.open({
+              message:"Error message",
+              description:response.data.message,
+              onClick:()=>{
+                console.log(response.data);
+              },
+
+          });
+        }
+      }else {
+        alert("Submit Error");
+      }
+    }).catch((e)=> {
+        alert("Connect Error");
+        console.log(e);
+      }
+    )
+  }
   onLanguageChange(newValue)
   {
     this.setState({language:newValue,language_post:this.getLanguage(newValue)})
@@ -130,6 +164,13 @@ class SubmitForm extends React.Component{
     console.log(newValue);
     this.setState({theme:newValue})
   }
+  onOkhandle=()=>{
+    this.setState({visible:false});
+    window.location.href="http://localhost:8081/login";
+  };
+  onCanclehandle=()=>{
+    this.setState({visible:false});
+  };
   render() {
     const code = this.state.code;
     const options = {
@@ -151,7 +192,7 @@ class SubmitForm extends React.Component{
             theme={this.state.theme}
             value={code}
             options={options}
-            onChange={::this.onChange}
+            onChange={::this.onChange.bind(this)}
             editorDidMount={::this.editorDidMount}
           />
           </FreeScrollbar>
@@ -166,8 +207,11 @@ class SubmitForm extends React.Component{
             <Option key={"2"} value={"vs-dark"}>Visual Studio Dark</Option>
             <Option key={"3"} value={"hc-black"}>High Contrast Dark</Option>
           </Select>
-          <Button type="primary">Submit</Button>
+          <Button type="primary" onClick={this.onSubmit.bind(this)}>Submit</Button>
         </div>
+        <Modal title={"login"} visible={this.state.visible} onOk={this.onOkhandle} onCancel={this.onCanclehandle}>
+            You are not logged in.Click ok to login!
+        </Modal>
       </div>
     );
   }
