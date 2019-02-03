@@ -62,31 +62,31 @@ class ProblemInfo extends Component {
     return (
       <div style={{height:document.body.clientHeight,margin:"0 15px"}}>
         <FreeScrollbar>
-        <row>
-          <div style={{textAlign:"center",fontSize:"30px"}}>
-          {this.state.name}
-          </div>
-        </row>
-        <row>
-          <ReactMarkdown source={"## Description"}/>
-          <ReactMarkdown source={this.state.description}/>
-        </row>
-        <row>
-          <ReactMarkdown source={"## Input"}/>
-          <ReactMarkdown source={this.state.input}/>
-        </row>
-        <row>
-          <ReactMarkdown source={"## Output"}/>
-          <ReactMarkdown source={this.state.output}/>
-        </row>
-        <row>
-          <ReactMarkdown source={"## Example Input"}/>
-          <ReactMarkdown source={this.state.simple_input}/>
-        </row>
-        <row>
-          <ReactMarkdown source={"## Example Output"}/>
-          <ReactMarkdown source={this.state.simple_output}/>
-        </row>
+          <row>
+            <div style={{textAlign:"center",fontSize:"30px"}}>
+              {this.state.name}
+            </div>
+          </row>
+          <row>
+            <ReactMarkdown source={"## Description"}/>
+            <ReactMarkdown source={this.state.description}/>
+          </row>
+          <row>
+            <ReactMarkdown source={"## Input"}/>
+            <ReactMarkdown source={this.state.input}/>
+          </row>
+          <row>
+            <ReactMarkdown source={"## Output"}/>
+            <ReactMarkdown source={this.state.output}/>
+          </row>
+          <row>
+            <ReactMarkdown source={"## Example Input"}/>
+            <ReactMarkdown source={this.state.simple_input}/>
+          </row>
+          <row>
+            <ReactMarkdown source={"## Example Output"}/>
+            <ReactMarkdown source={this.state.simple_output}/>
+          </row>
         </FreeScrollbar>
       </div>
     );
@@ -133,16 +133,16 @@ class SubmitForm extends React.Component{
       {
         if(response.data.errCode===10300)
         {
-            this.setState({visible:true});
+          this.setState({visible:true});
         }else if(response.data.errCode===0){
-            window.location.href="http://localhost:8081/status";
+          window.location.href="http://localhost:8081/status";
         }else{
           notification.open({
-              message:"Error message",
-              description:response.data.message,
-              onClick:()=>{
-                console.log(response.data);
-              },
+            message:"Error message",
+            description:response.data.message,
+            onClick:()=>{
+              console.log(response.data);
+            },
 
           });
         }
@@ -185,16 +185,16 @@ class SubmitForm extends React.Component{
         </row>
         <div style={{height:document.body.clientHeight*0.9,margin:"0 15px"}}>
           <FreeScrollbar>
-          <MonacoEditor
-            width="800"
-            height={document.body.clientHeight*0.9}
-            language={this.state.language}
-            theme={this.state.theme}
-            value={code}
-            options={options}
-            onChange={::this.onChange.bind(this)}
-            editorDidMount={::this.editorDidMount}
-          />
+            <MonacoEditor
+              width="800"
+              height={document.body.clientHeight*0.9}
+              language={this.state.language}
+              theme={this.state.theme}
+              value={code}
+              options={options}
+              onChange={::this.onChange.bind(this)}
+              editorDidMount={::this.editorDidMount}
+            />
           </FreeScrollbar>
           Language:
           <Select defaultValue={"1"} onChange={this.onLanguageChange.bind(this)}>
@@ -210,7 +210,7 @@ class SubmitForm extends React.Component{
           <Button type="primary" onClick={this.onSubmit.bind(this)}>Submit</Button>
         </div>
         <Modal title={"login"} visible={this.state.visible} onOk={this.onOkhandle} onCancel={this.onCanclehandle}>
-            You are not logged in.Click ok to login!
+          You are not logged in.Click ok to login!
         </Modal>
       </div>
     );
