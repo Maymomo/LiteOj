@@ -4,8 +4,8 @@ import { STATUS_URL } from '@/api/api';
 import React from 'react';
 import Table from 'antd/es/table';
 import { connect } from 'dva';
-import Row from 'antd/es/grid/row';
-import Col from 'antd/es/grid/col';
+import { Link } from 'umi';
+import { Layout, Row, Col } from 'antd';
 
 let languageEnum = new Map();
 languageEnum.set(1, 'C');
@@ -27,16 +27,14 @@ const columns = [{
   title: 'UserName',
   dataIndex: 'username',
   render: (text, record) => (
-    <span>
-      <a href={record.uid}>{text}</a>
-    </span>
+    <Link to={'probleminfo/' + record.uid}>{text}</Link>
   ),
 }, {
   title: 'SubmitTime',
   dataIndex: 'time',
   render: text => (
     <span>
-      <a href="/">{toDateTime(text).toDateString()}</a>
+      {toDateTime(text).toDateString()}
     </span>
   ),
 }, {
@@ -44,16 +42,14 @@ const columns = [{
   dataIndex: 'language',
   render: text => (
     <span>
-      <a href="/">{languageEnum.get(text)}</a>
+      {languageEnum.get(text)}
     </span>
   ),
 }, {
   title: 'ProlemName',
   dataIndex: 'problemname',
   render: (text, record) => (
-    <span>
-      <a href={record.pid}>{text}</a>
-    </span>
+    <Link to={'probleminfo/' + record.pid}>{text}</Link>
   ),
 }, {
   title: 'TimeCost',
@@ -69,7 +65,7 @@ class StatusTable extends Component {
     super();
     this.state = {
       data: [],
-      pagination: 15,
+      pagination: {pageSize: 15},
       loading: false,
     };
   }
@@ -82,11 +78,11 @@ class StatusTable extends Component {
     let state = this.state;
     state.loading = true;
     this.setState(state);
-    axios.get(STATUS_URL, { params: { page: params.page, capacity: 15 } }).then(
+    axios.get(STATUS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize} }).then(
       response => {
         if (response.data.hasOwnProperty('errCode') && response.data.errCode === 0) {
           let msg = JSON.parse(window.atob(response.data.message));
-          this.setState({ data: msg.data, loading: false, pagination: { total: msg.max_pages + 1 } });
+          this.setState({ data: msg.data, loading: false, pagination: { total: msg.max_pages} });
         } else {
           let msg = window.atob(response.data.message);
           msg = JSON.parse(msg);
@@ -98,6 +94,7 @@ class StatusTable extends Component {
     });
   };
   handleTableChange = ({ pagination }) => {
+    console.log(pagination);
     this.fetch({ page: pagination.current });
   };
 
@@ -117,13 +114,15 @@ class StatusTable extends Component {
 
 function Status() {
   return (
-    <Row>
-      <Col md={3}/>
-      <Col md={18}>
-        <StatusTable/>
-      </Col>
-      <Col md={3}/>
-    </Row>
+    <Layout>
+      <Row>
+        <Col md={3}/>
+        <Col md={18}>
+          <StatusTable/>
+        </Col>
+        <Col md={3}/>
+      </Row>
+    </Layout>
   );
 }
 

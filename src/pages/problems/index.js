@@ -75,7 +75,7 @@ class ProblemsTable extends Component {
 
   fetchProblems = (params = {}) => {
     this.setState({ loading: true });
-    axios.get(PROBLEMS_URL, { params: { page: params.page, capacity: 15 } },
+    axios.get(PROBLEMS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize} },
     ).then(response => {
       if (response.data.hasOwnProperty('errCode') && response.data.errCode === 0) {
         let msg = window.atob(response.data.message);
