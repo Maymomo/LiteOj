@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { Col, Row, Table, Input, Layout } from 'antd';
 import axios from 'axios';
+import { Link } from 'umi';
 import { PROBLEM_URL, PROBLEMS_URL } from '@/api/api';
 
 const Search = Input.Search;
@@ -13,10 +14,20 @@ const columns = [{
   sorter: function(row_1, row_2) {
     return row_1.pid > row_2.pid;
   },
+  render: (pid, record) => {
+    return (
+      <Link style={{ color: '#495060' }} to={'probleminfo/' + pid}>{pid}</Link>
+    );
+  },
   sortDirections: ['descend', 'ascend'],
 }, {
   title: 'Name',
   dataIndex: 'name',
+  render: (name, record) => {
+    return (
+      <Link style={{ color: '#495060' }} to={'probleminfo/' + record.pid}>{name}</Link>
+    );
+  },
 }, {
   title: 'Solved',
   dataIndex: 'solved',
