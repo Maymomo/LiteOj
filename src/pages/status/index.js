@@ -4,6 +4,7 @@ import { STATUS_URL } from '@/api/api';
 import React from 'react';
 import Table from 'antd/es/table';
 import { connect } from 'dva';
+import {router} from 'umi/router';
 import { Link } from 'umi';
 import { Layout, Row, Col } from 'antd';
 
@@ -65,7 +66,7 @@ class StatusTable extends Component {
     super();
     this.state = {
       data: [],
-      pagination: {pageSize: 15},
+      pagination: { pageSize: 15 },
       loading: false,
     };
   }
@@ -78,11 +79,15 @@ class StatusTable extends Component {
     let state = this.state;
     state.loading = true;
     this.setState(state);
-    axios.get(STATUS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize} }).then(
+    axios.get(STATUS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize } }).then(
       response => {
         if (response.data.hasOwnProperty('errCode') && response.data.errCode === 0) {
           let msg = JSON.parse(window.atob(response.data.message));
-          this.setState({ data: msg.data, loading: false, pagination: { total: msg.max_pages} });
+          this.setState({
+            data: msg.data,
+            loading: false,
+            pagination: { ...this.state.pagination, total: msg.max_pages },
+          });
         } else {
           let msg = window.atob(response.data.message);
           msg = JSON.parse(msg);
@@ -91,6 +96,7 @@ class StatusTable extends Component {
       },
     ).catch((e) => {
       alert(e);
+      router.push("/");
     });
   };
   handleTableChange = ({ pagination }) => {

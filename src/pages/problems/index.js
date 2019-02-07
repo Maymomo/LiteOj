@@ -52,7 +52,6 @@ class ProblemsTable extends Component {
         if (!(response.data.hasOwnProperty('errCode') && response.data.errCode === 0)) {
           let msg = response.data.message;
           alert(msg);
-          router.push('/');
         } else {
           let msg = window.atob(response.data.message);
           msg = JSON.parse(msg);
@@ -63,7 +62,11 @@ class ProblemsTable extends Component {
           }
           msg.rate = rate;
           let data = [msg];
-          this.setState({ data: data, loading: false, pagination: { total: msg.max_pages + 1 } });
+          this.setState({
+            data: data,
+            loading: false,
+            pagination: { ...this.state.pagination, total: msg.max_pages + 1 },
+          });
         }
       },
     ).catch((e) => {
@@ -75,7 +78,7 @@ class ProblemsTable extends Component {
 
   fetchProblems = (params = {}) => {
     this.setState({ loading: true });
-    axios.get(PROBLEMS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize} },
+    axios.get(PROBLEMS_URL, { params: { page: params.page, capacity: this.state.pagination.pageSize } },
     ).then(response => {
       if (response.data.hasOwnProperty('errCode') && response.data.errCode === 0) {
         let msg = window.atob(response.data.message);
@@ -88,11 +91,14 @@ class ProblemsTable extends Component {
           }
           msg.data[i].rate = rate;
         }
-        this.setState({ data: msg.data, loading: false, pagination: { total: msg.max_pages + 1 } });
+        this.setState({
+          data: msg.data,
+          loading: false,
+          pagination: { ...this.state.pagination, total: msg.max_pages + 1 },
+        });
       } else {
-        let msg = window.atob(response.data.message);
+        let msg = response.data.message;
         alert(msg);
-        router.push('/');
       }
     }).catch((e) => {
         alert(e);
@@ -111,7 +117,8 @@ class ProblemsTable extends Component {
     }
   };
 
-  handleSearchChange = value => {
+  handleSearchChange = e => {
+    let value = e.target.value;
     if (this.onSearch === true && (value.length === 0 || isNaN(parseInt(value)))) {
       this.onSearch = false;
       this.fetchProblems({ page: 1 });
@@ -164,5 +171,6 @@ function Problems() {
   );
 }
 
-export default connect(() => {
+export default connect(state => {
+  return state;
 })(Problems);
